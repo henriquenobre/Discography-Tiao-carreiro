@@ -46,6 +46,7 @@
     height: 35px;
     border: none;
     border-radius: 25px;
+    padding: 15px;
 }
 
 .searchFlex button{
