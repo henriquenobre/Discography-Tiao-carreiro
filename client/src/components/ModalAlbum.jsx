@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import { useState } from "react";
-import '../styles/modal.css'
+import "../styles/modal.css";
 import { FaWindowClose } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
 
@@ -11,6 +11,8 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
   const [music, setMusic] = useState("");
   const [durationMusic, setDurationMusic] = useState(0);
   const [album, setAlbum] = useState([]);
+  const [musicsAlbum, setMusicsAlbum] = useState([]);
+  const [counter, setCounter] = useState(1)
 
   function handleRegister(event) {
     event.preventDefault();
@@ -20,30 +22,35 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
   function handleAdd(event) {
     event.preventDefault();
 
-    const albumTemp = {
+    const updateAlbum = {
       album: nameAlbum,
       year: yearAlbum,
-      musics: [
-        {
-          name: music,
-          duration: durationMusic,
-        },
-      ],
     };
-    setAlbum(albumTemp);
+    const updateMusicsALbum = [
+      ...musicsAlbum,
+      {
+        id: counter,
+        music: music,
+        duration: durationMusic,
+      },
+    ];
+
+    setAlbum(updateAlbum);
+    setMusicsAlbum(updateMusicsALbum);
     setMusic("");
     setDurationMusic(0);
+    setCounter(counter + 1)
   }
 
   return (
     <div>
-      {console.log(album)}
       <Modal
         isOpen={modalIsOpen}
         overlayClassName="react-modal-overlay"
         className="react-modal-content"
         onRequestClose={closeModal}
         contentLabel="Adcionar Album"
+        ariaHideApp={false}
       >
         <div className="modal-content">
           <h2 className="title">Adcionar Album</h2>
@@ -59,12 +66,13 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
               {album?.album ? (
                 <>
                   <input
-                    disable={true}
+                    disabled
                     placeholder="se for true desabilitado"
                     onChange={(event) => setNameAlbum(event.target.value)}
                     className="input-text"
                   />
                   <input
+                    disabled
                     placeholder="Ano"
                     type="number"
                     onChange={(event) => setYearAlbum(event.target.value)}
@@ -74,7 +82,6 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
               ) : (
                 <>
                   <input
-                    disable={true}
                     placeholder="Nome do Album"
                     onChange={(event) => setNameAlbum(event.target.value)}
                     className="input-text"
@@ -99,10 +106,14 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
                 placeholder="Duração"
                 onChange={(event) => setDurationMusic(event.target.value)}
               />
-              <button onClick={handleAdd}><FaRegPlusSquare size={25} /></button>
+              <button onClick={handleAdd}>
+                <FaRegPlusSquare size={25} />
+              </button>
             </div>
             <div className="album-data">
-              <h3>Album: Rei do Gado, Ano: 1961</h3>
+              <h3>
+                Album: {nameAlbum}, Ano: {yearAlbum}
+              </h3>
               <table>
                 <thead>
                   <tr>
@@ -112,29 +123,29 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Alma de boêmio</td>
-                    <td>3:15</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Borboleta do asfalto</td>
-                    <td>2:59</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Punhal da falsidade</td>
-                    <td>3:08</td>
-                  </tr>
+                  {musicsAlbum.map((musicsAlbum) => {
+                    return (
+                      <tr key={musicsAlbum.id}>
+                        <td>{musicsAlbum.id}</td>
+                        <td>{musicsAlbum.music}</td>
+                        <td>{musicsAlbum.duration}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
             <div className="button-actions">
-              <button className="button-register" type="submit" onClick={handleRegister}>
+              <button
+                className="button-register"
+                type="submit"
+                onClick={handleRegister}
+              >
                 Cadastrar
               </button>
-              <button className="button-cancel" onClick={closeModal}>Cancelar</button>
+              <button className="button-cancel" onClick={closeModal}>
+                Cancelar
+              </button>
             </div>
           </form>
         </div>
