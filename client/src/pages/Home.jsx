@@ -24,8 +24,8 @@ export function Home() {
           <img src={logoImg} alt="" />
           <h1>Discografia</h1>
         </div>
-        <div>
-          <button onClick={openModalAlbum}>Adcionar Album</button>
+        <div className="modal-add">
+          <button className="add-album" onClick={openModalAlbum}>Adcionar Album</button>
           <ModalAlbum
             openModal={openModalAlbum}
             closeModal={closeModalAlbum}
@@ -35,16 +35,16 @@ export function Home() {
         <div className="search">
           <strong>Buscar Música ou Album</strong>
           <div className="searchFlex">
-            <input type="text" />
+            <input type="text" placeholder="Digite o nome da música ou do album" />
             <button>Procurar</button>
           </div>
         </div>
-        <div>
-          <h2>Album Rei do Gado, 1961</h2>
+        <div className="table-album">
+          <h2>Album: Rei do Gado, Ano: 1961</h2>
           <table>
             <thead>
               <tr>
-                <th>Número</th>
+                <th>N°</th>
                 <th>Faixa</th>
                 <th>Duração</th>
               </tr>
