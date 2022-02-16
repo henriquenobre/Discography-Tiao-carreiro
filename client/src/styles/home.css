@@ -7,9 +7,10 @@
 }
 
 .backgroundTransparent{
-    height: 80vh;
+    height: 85vh;
     width: 85vw;
     background: rgba(255, 255, 255, 0.7);
+    overflow-y: scroll;
 }
 
 .header{

@@ -8,6 +8,8 @@ export function Home() {
   //constante para abertura e fechamento do modal
   const [modalAlbumIsOpen, setAlbumIsOpen] = useState(false);
 
+  const album = localStorage.getItem("album")
+  console.log(JSON.parse(album));
   //funções para abrir e fechar o modal
   function openModalAlbum() {
     setAlbumIsOpen(true);

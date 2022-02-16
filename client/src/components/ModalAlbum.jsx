@@ -12,13 +12,19 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
   const [durationMusic, setDurationMusic] = useState(0);
   const [album, setAlbum] = useState([]);
   const [musicsAlbum, setMusicsAlbum] = useState([]);
-  const [counter, setCounter] = useState(1)
 
+  //cadastrar dados da modal
   function handleRegister(event) {
     event.preventDefault();
-    //colocar log para caso nao clicar no + adcionar musica
+
+    localStorage.setItem("album", JSON.stringify(album))
+    localStorage.setItem("musicsAlbum", JSON.stringify(musicsAlbum))
+    setAlbum([])
+    setMusicsAlbum([])
+    closeModal()
   }
 
+  //registrar novas faixas no album
   function handleAdd(event) {
     event.preventDefault();
 
@@ -29,7 +35,6 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
     const updateMusicsALbum = [
       ...musicsAlbum,
       {
-        id: counter,
         music: music,
         duration: durationMusic,
       },
@@ -39,7 +44,6 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
     setMusicsAlbum(updateMusicsALbum);
     setMusic("");
     setDurationMusic(0);
-    setCounter(counter + 1)
   }
 
   return (
@@ -100,11 +104,13 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
                 className="input-text"
                 placeholder="Nome da música"
                 onChange={(event) => setMusic(event.target.value)}
+                value={music}
               />
               <input
                 className="input-number"
                 placeholder="Duração"
                 onChange={(event) => setDurationMusic(event.target.value)}
+                value={durationMusic}
               />
               <button onClick={handleAdd}>
                 <FaRegPlusSquare size={25} />
@@ -123,10 +129,10 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {musicsAlbum.map((musicsAlbum) => {
+                  {musicsAlbum.map((musicsAlbum,index) => {
                     return (
-                      <tr key={musicsAlbum.id}>
-                        <td>{musicsAlbum.id}</td>
+                      <tr key={index}>
+                        <td>{index + 1}</td>
                         <td>{musicsAlbum.music}</td>
                         <td>{musicsAlbum.duration}</td>
                       </tr>
