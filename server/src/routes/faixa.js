@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const { index, create, update, remove, getById } = require('../controllers/album')
+
+const { index, create, update, remove, getById } = require('../controllers/faixa')
 
 
 router.get('/', index);

@@ -1,15 +1,37 @@
 import logoImg from "../assets/images/logoTiao.png";
-import { useState } from "react";
-
+import { useState,useEffect } from "react";
 import "../styles/home.css";
 import { ModalAlbum } from "../components/ModalAlbum";
+import {api} from "../services/api"
 
 export function Home() {
   //constante para abertura e fechamento do modal
   const [modalAlbumIsOpen, setAlbumIsOpen] = useState(false);
+  const [album, setAlbum] = useState()
+  const [musics, setMusics] = useState()
+  useEffect(() => {
+    async function getAllAlbum() {
+      await api
+        .get("album")
+        .then((response) => setAlbum(response.data));
+    }
 
-  const album = localStorage.getItem("album")
-  console.log(JSON.parse(album));
+    async function getAllMusics() {
+      await api
+        .get("faixa")
+        .then((response) => setMusics(response.data));
+    }
+
+    getAllAlbum();
+    getAllMusics()
+  }, []);
+
+
+  console.log(album);
+  console.log(musics);
+
+  
+
   //funções para abrir e fechar o modal
   function openModalAlbum() {
     setAlbumIsOpen(true);
@@ -32,6 +54,7 @@ export function Home() {
             openModal={openModalAlbum}
             closeModal={closeModalAlbum}
             modalIsOpen={modalAlbumIsOpen}
+            albumName={album}
           />
         </div>
         <div className="search">

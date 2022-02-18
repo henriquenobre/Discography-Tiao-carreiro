@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const databaseConfig = require("../config/database");
 
 const Album = require("../models/Album");
+const Faixa = require("../models/Faixa");
 
 class Database {
   constructor() {
@@ -20,7 +21,7 @@ class Database {
 
     //INIT
     Album.init(this.connection);
-
+    Faixa.init(this.connection);
 
     //ASSOCIATE
     //User.associate(this.connection.models);

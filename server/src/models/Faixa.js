@@ -2,27 +2,32 @@ const Sequelize = require("sequelize");
 const { Model } = require("sequelize");
 
 
-class Album extends Model {
+class Faixa extends Model {
     static init(sequelize) {
         super.init(
             {
+                numero: Sequelize.INTEGER,
                 nome: Sequelize.STRING,
-                ano: Sequelize.INTEGER,
+                duracao: Sequelize.STRING,
+                album_id: Sequelize.INTEGER,
             },
             {
                 sequelize,
                 timestamps: false,
                 createdAt: false,
                 updatedAt: false,
-                tableName: "album"
+                tableName: "faixa"
             }
         );
 
         return this;
     }
     static associate(models) {
-        this.hasMany(models.Faixa, { as: "faixa" })
+        this.belongsTo(models.Album, {
+            foreignKey: "album_id",
+            as: "album"
+        })
     }
 }
 
-module.exports = Album;
+module.exports = Faixa;

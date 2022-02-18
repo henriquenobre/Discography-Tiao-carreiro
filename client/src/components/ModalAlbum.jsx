@@ -3,8 +3,9 @@ import { useState } from "react";
 import "../styles/modal.css";
 import { FaWindowClose } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
+import { api } from "../services/api";
 
-export function ModalAlbum({ modalIsOpen, closeModal }) {
+export function ModalAlbum({ modalIsOpen, closeModal, albumName }) {
   //variaveis que guardam os valores dos input
   const [nameAlbum, setNameAlbum] = useState("");
   const [yearAlbum, setYearAlbum] = useState(0);
@@ -12,31 +13,53 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
   const [durationMusic, setDurationMusic] = useState(0);
   const [album, setAlbum] = useState([]);
   const [musicsAlbum, setMusicsAlbum] = useState([]);
+  const [indexMusic, setIndexMusic] = useState(1)
 
-  //cadastrar dados da modal
-  function handleRegister(event) {
+  //cadastrar album no banco de dados
+   function handleRegister(event) {
     event.preventDefault();
+  
+  //  api.post("faixa", {
+  //      "numero": 1,
+  //      "nome": "music",
+  //      "duracao": 5,
+  //      "album_id": 1
+  //    }
+  //  )
 
-    localStorage.setItem("album", JSON.stringify(album))
-    localStorage.setItem("musicsAlbum", JSON.stringify(musicsAlbum))
-    setAlbum([])
-    setMusicsAlbum([])
-    closeModal()
+     musicsAlbum.forEach((tracks) =>{
+    console.log(tracks);
+    api.post("faixa", tracks);
+   })
+  
+
+
+    console.log(album, musicsAlbum);
+  //  api.post("album", album)
+  //  api.post("faixa", musicsAlbum)
+  //  setAlbum([])
+  //  setMusicsAlbum([])
+  //  closeModal()
   }
 
-  //registrar novas faixas no album
+  //usado para preencher album_id que relaciona as tabelas do banco
+  const albumRelated = albumName
+
+  //registrar album e faixas para serem cadastradas
   function handleAdd(event) {
     event.preventDefault();
 
     const updateAlbum = {
-      album: nameAlbum,
-      year: yearAlbum,
+      nome: nameAlbum,
+      ano: yearAlbum,
     };
     const updateMusicsALbum = [
       ...musicsAlbum,
       {
-        music: music,
-        duration: durationMusic,
+        numero: indexMusic,
+        nome: music,
+        duracao: parseInt(durationMusic),
+        album_id: albumRelated.length + 1
       },
     ];
 
@@ -44,6 +67,7 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
     setMusicsAlbum(updateMusicsALbum);
     setMusic("");
     setDurationMusic(0);
+    setIndexMusic(indexMusic + 1)
   }
 
   return (
@@ -109,6 +133,7 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
               <input
                 className="input-number"
                 placeholder="Duração"
+                type="number"
                 onChange={(event) => setDurationMusic(event.target.value)}
                 value={durationMusic}
               />
@@ -129,12 +154,12 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {musicsAlbum.map((musicsAlbum,index) => {
+                  {musicsAlbum.map((musicsAlbum) => {
                     return (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{musicsAlbum.music}</td>
-                        <td>{musicsAlbum.duration}</td>
+                      <tr key={musicsAlbum.numero}>
+                        <td>{musicsAlbum.numero}</td>
+                        <td>{musicsAlbum.nome}</td>
+                        <td>{musicsAlbum.duracao}</td>
                       </tr>
                     );
                   })}

@@ -9,13 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.BIGINT,
       },
-      name: {
+      nome: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      year: {
+      ano: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.INTEGER,
       },
     });
   },
