@@ -5,7 +5,7 @@ import { FaWindowClose } from "react-icons/fa";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { api } from "../services/api";
 
-export function ModalAlbum({ modalIsOpen, closeModal, albumName }) {
+export function ModalAlbum({ modalIsOpen, closeModal }) {
   //variaveis que guardam os valores dos input
   const [nameAlbum, setNameAlbum] = useState("");
   const [yearAlbum, setYearAlbum] = useState(0);
@@ -16,34 +16,41 @@ export function ModalAlbum({ modalIsOpen, closeModal, albumName }) {
   const [indexMusic, setIndexMusic] = useState(1)
 
   //cadastrar album no banco de dados
-   function handleRegister(event) {
+  async function handleRegister(event) {
     event.preventDefault();
-  
-  //  api.post("faixa", {
-  //      "numero": 1,
-  //      "nome": "music",
-  //      "duracao": 5,
-  //      "album_id": 1
-  //    }
-  //  )
 
-     musicsAlbum.forEach((tracks) =>{
-    console.log(tracks);
-    api.post("faixa", tracks);
-   })
-  
+    //envia requisição para cadastrar album
+    const resAlbum = await api.post("album", album)
+
+    //adciona o id que relaciona as tabelas
+    const newMusicArr = musicsAlbum.map(e => {
+      e.album_id = resAlbum.data.id
+      return e
+    })
+
+    //passa pelo array e envia uma requisição para cada faixa de musica
+    for (let i = 0; i < newMusicArr.length; i++) {
+      const element = newMusicArr[i];
+
+      try {
+        let resMusic = await api.post("faixa", element)
+        if (resMusic.status === 200)
+          console.log('Album adcionado com sucesso')
+        else
+          console.log('Houve um erro')
+
+      } catch (error) {
+        console.log(error.message);
+      }
 
 
-    console.log(album, musicsAlbum);
-  //  api.post("album", album)
-  //  api.post("faixa", musicsAlbum)
-  //  setAlbum([])
-  //  setMusicsAlbum([])
-  //  closeModal()
+    }
+
+    setAlbum([])
+    setMusicsAlbum([])
+    closeModal()
   }
 
-  //usado para preencher album_id que relaciona as tabelas do banco
-  const albumRelated = albumName
 
   //registrar album e faixas para serem cadastradas
   function handleAdd(event) {
@@ -58,8 +65,7 @@ export function ModalAlbum({ modalIsOpen, closeModal, albumName }) {
       {
         numero: indexMusic,
         nome: music,
-        duracao: parseInt(durationMusic),
-        album_id: albumRelated.length + 1
+        duracao: parseInt(durationMusic)
       },
     ];
 
@@ -86,16 +92,14 @@ export function ModalAlbum({ modalIsOpen, closeModal, albumName }) {
             <FaWindowClose size={30} />
           </button>
           <form
-            onSubmit={() => {
-              console.log("cadastrou");
-            }}
+            onSubmit={handleRegister}
           >
             <div className="album-title">
               {album?.album ? (
                 <>
                   <input
                     disabled
-                    placeholder="se for true desabilitado"
+                    placeholder="Nome do album"
                     onChange={(event) => setNameAlbum(event.target.value)}
                     className="input-text"
                   />

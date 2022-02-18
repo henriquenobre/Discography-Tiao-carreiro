@@ -1,36 +1,49 @@
 import logoImg from "../assets/images/logoTiao.png";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../styles/home.css";
 import { ModalAlbum } from "../components/ModalAlbum";
-import {api} from "../services/api"
+import { api } from "../services/api"
 
 export function Home() {
   //constante para abertura e fechamento do modal
   const [modalAlbumIsOpen, setAlbumIsOpen] = useState(false);
-  const [album, setAlbum] = useState()
-  const [musics, setMusics] = useState()
+  const [album, setAlbum] = useState([])
+  const [musics, setMusics] = useState([])
+  const [finalData, setFinalData] = useState([])
   useEffect(() => {
-    async function getAllAlbum() {
-      await api
-        .get("album")
-        .then((response) => setAlbum(response.data));
-    }
-
-    async function getAllMusics() {
-      await api
-        .get("faixa")
-        .then((response) => setMusics(response.data));
-    }
-
-    getAllAlbum();
-    getAllMusics()
+    getAllDatas()
   }, []);
 
 
-  console.log(album);
-  console.log(musics);
+  //função que cria um array de objetos relacioando as tabelas de album com a de faixas
+  async function getAllDatas() {
 
-  
+    const albumRes = await api.get("album");
+    setAlbum(albumRes.data)
+
+    const trackRes = await api.get("faixa");
+    setMusics(trackRes.data)
+
+    const finalData = albumRes.data.map(album => {
+
+      const newTracks = []
+
+      //passa em cada objeto retornando os dados das faixas para dentro do novo objeto
+      trackRes.data.forEach(track => {
+
+        if (track.album_id === album.id) {
+          newTracks.push(track)
+        }
+
+      })
+
+      album.tracks = newTracks
+
+      return album
+    })
+
+    setFinalData(finalData)
+  }
 
   //funções para abrir e fechar o modal
   function openModalAlbum() {
@@ -64,35 +77,32 @@ export function Home() {
             <button>Procurar</button>
           </div>
         </div>
-        <div className="table-album">
-          <h2>Album: Rei do Gado, Ano: 1961</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>N°</th>
-                <th>Faixa</th>
-                <th>Duração</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Alma de boêmio</td>
-                <td>3:15</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Borboleta do asfalto</td>
-                <td>2:59</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Punhal da falsidade</td>
-                <td>3:08</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {finalData.map((album) => {
+          return (
+            <div className="table-album">
+              <h2>{`Album: ${album.nome} , Ano: ${album.ano}`}</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th>Faixa</th>
+                    <th>Duração</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {album.tracks.map(tranck =>
+                    <tr>
+                      <td>{ tranck.numero }</td>
+                      <td>{ tranck.nome }</td>
+                      <td>{ tranck.duracao }</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )
+        })
+        }
       </div>
     </div>
   );
