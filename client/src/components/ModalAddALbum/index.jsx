@@ -1,11 +1,10 @@
 import Modal from "react-modal";
 import { useState } from "react";
-import "../styles/modal.css";
-import { FaWindowClose } from "react-icons/fa";
-import { FaRegPlusSquare } from "react-icons/fa";
-import { api } from "../services/api";
+import "./style.css";
+import { FaWindowClose, FaRegPlusSquare, FaTrashAlt } from "react-icons/fa";
+import { api } from "../../services/api";
 
-export function ModalAlbum({ modalIsOpen, closeModal }) {
+export function ModalAddAlbum({ modalIsOpen, closeModal }) {
   //variaveis que guardam os valores dos input
   const [nameAlbum, setNameAlbum] = useState("");
   const [yearAlbum, setYearAlbum] = useState(0);
@@ -13,44 +12,38 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
   const [durationMusic, setDurationMusic] = useState(0);
   const [album, setAlbum] = useState([]);
   const [musicsAlbum, setMusicsAlbum] = useState([]);
-  const [indexMusic, setIndexMusic] = useState(1)
+  const [indexMusic, setIndexMusic] = useState(1);
 
   //cadastrar album no banco de dados
   async function handleRegister(event) {
     event.preventDefault();
 
     //envia requisição para cadastrar album
-    const resAlbum = await api.post("album", album)
+    const resAlbum = await api.post("album", album);
 
     //adciona o id que relaciona as tabelas
-    const newMusicArr = musicsAlbum.map(e => {
-      e.album_id = resAlbum.data.id
-      return e
-    })
+    const newMusicArr = musicsAlbum.map((e) => {
+      e.album_id = resAlbum.data.id;
+      return e;
+    });
 
     //passa pelo array e envia uma requisição para cada faixa de musica
     for (let i = 0; i < newMusicArr.length; i++) {
       const element = newMusicArr[i];
 
       try {
-        let resMusic = await api.post("faixa", element)
-        if (resMusic.status === 200)
-          console.log('Album adcionado com sucesso')
-        else
-          console.log('Houve um erro')
-
+        let resMusic = await api.post("faixa", element);
+        if (resMusic.status === 200) console.log("Album adcionado com sucesso");
+        else console.log("Houve um erro");
       } catch (error) {
         console.log(error.message);
       }
-
-
     }
 
-    setAlbum([])
-    setMusicsAlbum([])
-    closeModal()
+    setAlbum([]);
+    setMusicsAlbum([]);
+    closeModal();
   }
-
 
   //registrar album e faixas para serem cadastradas
   function handleAdd(event) {
@@ -65,7 +58,7 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
       {
         numero: indexMusic,
         nome: music,
-        duracao: parseInt(durationMusic)
+        duracao: parseInt(durationMusic),
       },
     ];
 
@@ -73,8 +66,13 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
     setMusicsAlbum(updateMusicsALbum);
     setMusic("");
     setDurationMusic(0);
-    setIndexMusic(indexMusic + 1)
+    setIndexMusic(indexMusic + 1);
   }
+
+  //function removeTrack(event, id) {
+  //  event.preventDefault();
+  //  console.log(id);
+  //}
 
   return (
     <div>
@@ -91,9 +89,7 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
           <button className="modal-close" onClick={closeModal}>
             <FaWindowClose size={30} />
           </button>
-          <form
-            onSubmit={handleRegister}
-          >
+          <form onSubmit={handleRegister}>
             <div className="album-title">
               {album?.album ? (
                 <>
@@ -164,6 +160,14 @@ export function ModalAlbum({ modalIsOpen, closeModal }) {
                         <td>{musicsAlbum.numero}</td>
                         <td>{musicsAlbum.nome}</td>
                         <td>{musicsAlbum.duracao}</td>
+                        <td>
+                          <button
+                            className="button-trash"
+                            //onClick={removeTrack(musicsAlbum.id)}
+                          >
+                            <FaTrashAlt size={20} />
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
