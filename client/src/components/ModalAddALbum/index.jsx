@@ -15,9 +15,7 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
   const [indexMusic, setIndexMusic] = useState(1);
 
   //cadastrar album no banco de dados
-  async function handleRegister(event) {
-    event.preventDefault();
-
+  async function handleRegister() {
     //envia requisição para cadastrar album
     const resAlbum = await api.post("album", album);
 
@@ -58,7 +56,7 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
       {
         numero: indexMusic,
         nome: music,
-        duracao: parseInt(durationMusic),
+        duracao: durationMusic,
       },
     ];
 

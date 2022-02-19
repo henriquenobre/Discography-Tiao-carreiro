@@ -9,8 +9,8 @@ export function ModalEditTrack({ modalIsOpen, closeModal, trackUpdatId, trackIdR
   const [music, setMusic] = useState("");
   const [durationMusic, setDurationMusic] = useState(0);
 
-  async function handleEdit(event) {
-    event.preventDefault();
+  async function handleEdit() {
+  //cria novo ocjeto com dados do input para editar a faixa
     const newTrack = {
       id: trackUpdatId,
       nome: music,

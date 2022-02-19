@@ -5,11 +5,14 @@ import { ModalAddAlbum } from "../../components/ModalAddALbum";
 import { ModalEditTrack } from "../../components/ModalEditTrack";
 import { api } from "../../services/api";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
+import { ModalDeleteTrack } from "../../components/ModalDeleteTrack";
 
 export function Home() {
   //constante para abertura e fechamento do modal
   const [modalAlbumIsOpen, setAlbumIsOpen] = useState(false);
   const [modalEditAlbum, setModalEditAlbum] = useState(false);
+  const [modalDeleteTrackIsOpen, setModalDeleteTrackIsOpen] = useState(false);
+  const [trackDeleteId, setTrackDeleteId] = useState(0)
   const [trackUpdatId, setTrackId] = useState(0);
   const [trackIdRelated, setTrackIdRelated] = useState(0);
   const [album, setAlbum] = useState([]);
@@ -18,8 +21,8 @@ export function Home() {
     getAllDatas();
   }, []);
 
-  //função que cria um array de objetos relacioando as tabelas de album com a de faixas
-  async function getAllDatas() {
+   //função que cria uma modalDeleteTrack array de objetos relacioando as tabelas de album com a de faixas
+   async function getAllDatas() {
     const albumRes = await api.get("album");
 
     const trackRes = await api.get("faixa");
@@ -42,9 +45,6 @@ export function Home() {
     setAlbum(updateAlbum);
   }
 
-  function deleteTrack(track) {
-    api.delete(`faixa/${track}`);
-  }
 
   //funções para abrir e fechar o modal
   function openModalAlbum() {
@@ -55,6 +55,10 @@ export function Home() {
     setTrackIdRelated(idRelated);
     setModalEditAlbum(true);
   }
+  function openDeleteTrack(track) {
+    setTrackDeleteId(track)
+    setModalDeleteTrackIsOpen(true)
+  }
 
   function closeModalAlbum() {
     setAlbumIsOpen(false);
@@ -62,20 +66,28 @@ export function Home() {
   function closeEditModal() {
     setModalEditAlbum(false);
   }
+  function closeDeleteTrack() {
+    setModalDeleteTrackIsOpen(false)
+  }
 
-  console.log(album);
 
   function handleSearch() {
     for (let i = 0; i < album.length; i++) {
       var tracks = album[i].tracks
       for (let index = 0; index < tracks.length; index++) {
-        var trackFound= tracks[index].nome
-        if(trackFound === search){
-          const seachTrack = tracks[index]
-        } else console.log('não encontrou');
+        var trackFound = tracks[index].nome
+        if (trackFound == search) {
+          const searchTrack = tracks[index]
+          const searchAlbum = album[i]
+          console.log(searchTrack);
+          console.log(album[i]);
+        } else console.log('nao encontrou');
       }
     }
+
   }
+
+
 
   return (
     <div className="containerHome">
@@ -84,33 +96,36 @@ export function Home() {
           <img src={logoImg} alt="" />
           <h1>Discografia</h1>
         </div>
+        <div className="search">
+          <strong>Buscar Música</strong>
+          <div className="searchFlex">
+            <input
+              type="text"
+              placeholder="Digite o nome da música"
+              onChange={(event) => setSearch(event.target.value)}
+            />
+            <button onClick={handleSearch}>Procurar</button>
+          </div>
+        </div>
         <div className="modal-add">
           <button className="add-album" onClick={openModalAlbum}>
             Adcionar Album
           </button>
           <ModalAddAlbum
-            openModal={openModalAlbum}
             closeModal={closeModalAlbum}
             modalIsOpen={modalAlbumIsOpen}
           />
           <ModalEditTrack
-            openModal={openEditModal}
             closeModal={closeEditModal}
             modalIsOpen={modalEditAlbum}
             trackUpdatId={trackUpdatId}
             trackIdRelated={trackIdRelated}
           />
-        </div>
-        <div className="search">
-          <strong>Buscar Música ou Album</strong>
-          <div className="searchFlex">
-            <input
-              type="text"
-              placeholder="Digite o nome da música ou do album"
-              onChange={(event) => setSearch(event.target.value)}
-            />
-            <button onClick={handleSearch}>Procurar</button>
-          </div>
+          <ModalDeleteTrack
+            closeModal={closeDeleteTrack}
+            modalIsOpen={modalDeleteTrackIsOpen}
+            trackDeleteId={trackDeleteId}
+          />
         </div>
         {album.map((album) => {
           return (
@@ -137,7 +152,7 @@ export function Home() {
                         <FaEdit />
                       </td>
                       <td
-                        onClick={() => deleteTrack(track.id)}
+                        onClick={() => openDeleteTrack(track.id)}
                         style={{ cursor: "pointer" }}
                       >
                         <FaTrashAlt />

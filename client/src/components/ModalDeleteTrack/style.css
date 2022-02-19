@@ -1,0 +1,122 @@
+.react-modal-overlay{
+    background: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left:0; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.react-modal-content{
+    width: 100%;
+    max-width: 576px;
+    background: #f0f2f5;
+    padding: 3rem;
+    position: relative;
+    border-radius: 0.25rem;
+}
+
+.title{
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.modal-close{
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.album-title,
+.album-musics{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.input-text{
+    width: 55%;
+    height: 35px;
+    border: none;
+    border-radius: 25px;
+    padding: 15px;
+    margin-right: 15px;
+}
+
+.input-number{
+    width: 20%;
+    height: 35px;
+    border: none;
+    border-radius: 25px;
+    padding: 15px;
+}
+
+.album-musics button{
+    border: none;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.album-data{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: solid 1px black;
+    margin-top: 15px;
+    padding: 15px;
+}
+
+.button-actions{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-register{
+    width: 30%;
+    height: 30px;
+    padding: 0 1.5rem;
+    background: green;
+    color: #fff;
+    border-radius: 0.25rem;
+    border: 0;  
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    transition: 0.2s;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.button-register:hover{
+    filter: brightness(0.9);
+}
+
+.button-cancel{
+    width: 30%;
+    height: 30px;
+    padding: 0 1.5rem;
+    background: red;
+    color: #fff;
+    border-radius: 0.25rem;
+    border: 0;  
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.button-cancel:hover{
+    filter: brightness(0.9);
+}
+
+.button-trash{
+    border: none;
+    cursor: pointer;
+}
