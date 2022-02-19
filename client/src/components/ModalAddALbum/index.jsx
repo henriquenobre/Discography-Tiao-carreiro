@@ -1,21 +1,22 @@
 import Modal from "react-modal";
 import { useState } from "react";
 import "./style.css";
-import { FaWindowClose, FaRegPlusSquare, FaTrashAlt } from "react-icons/fa";
+import { FaWindowClose, FaRegPlusSquare } from "react-icons/fa";
 import { api } from "../../services/api";
 
-export function ModalAddAlbum({ modalIsOpen, closeModal }) {
-  //variaveis que guardam os valores dos input
+export function ModalAddAlbum({ modalIsOpen, closeModalAlbum }) {
   const [nameAlbum, setNameAlbum] = useState("");
   const [yearAlbum, setYearAlbum] = useState(0);
   const [music, setMusic] = useState("");
-  const [durationMusic, setDurationMusic] = useState(0);
+  const [durationMusic, setDurationMusic] = useState('');
   const [album, setAlbum] = useState([]);
   const [musicsAlbum, setMusicsAlbum] = useState([]);
   const [indexMusic, setIndexMusic] = useState(1);
 
   //cadastrar album no banco de dados
-  async function handleRegister() {
+  async function handleRegister(event) {
+    event.preventDefault();
+
     //envia requisição para cadastrar album
     const resAlbum = await api.post("album", album);
 
@@ -25,22 +26,24 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
       return e;
     });
 
+
     //passa pelo array e envia uma requisição para cada faixa de musica
     for (let i = 0; i < newMusicArr.length; i++) {
       const element = newMusicArr[i];
 
       try {
         let resMusic = await api.post("faixa", element);
-        if (resMusic.status === 200) console.log("Album adcionado com sucesso");
-        else console.log("Houve um erro");
+      resMusic.status === 200
+          ? console.log("Album adcionado com sucesso")
+          : console.log("Houve um erro");
       } catch (error) {
         console.log(error.message);
       }
     }
 
-    setAlbum([]);
-    setMusicsAlbum([]);
-    closeModal();
+    setAlbum([])
+    setMusicsAlbum([])
+    closeModalAlbum()
   }
 
   //registrar album e faixas para serem cadastradas
@@ -67,10 +70,7 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
     setIndexMusic(indexMusic + 1);
   }
 
-  //function removeTrack(event, id) {
-  //  event.preventDefault();
-  //  console.log(id);
-  //}
+
 
   return (
     <div>
@@ -78,16 +78,16 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
         isOpen={modalIsOpen}
         overlayClassName="react-modal-overlay"
         className="react-modal-content"
-        onRequestClose={closeModal}
+        onRequestClose={closeModalAlbum}
         contentLabel="Adcionar Album"
         ariaHideApp={false}
       >
         <div className="modal-content">
           <h2 className="title">Adcionar Album</h2>
-          <button className="modal-close" onClick={closeModal}>
+          <button className="modal-close" onClick={closeModalAlbum}>
             <FaWindowClose size={30} />
           </button>
-          <form onSubmit={handleRegister}>
+          <form onSubmit={(event) => handleRegister(event)}>
             <div className="album-title">
               {album?.album ? (
                 <>
@@ -131,7 +131,6 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
               <input
                 className="input-number"
                 placeholder="Duração"
-                type="number"
                 onChange={(event) => setDurationMusic(event.target.value)}
                 value={durationMusic}
               />
@@ -158,14 +157,6 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
                         <td>{musicsAlbum.numero}</td>
                         <td>{musicsAlbum.nome}</td>
                         <td>{musicsAlbum.duracao}</td>
-                        <td>
-                          <button
-                            className="button-trash"
-                            //onClick={removeTrack(musicsAlbum.id)}
-                          >
-                            <FaTrashAlt size={20} />
-                          </button>
-                        </td>
                       </tr>
                     );
                   })}
@@ -176,11 +167,11 @@ export function ModalAddAlbum({ modalIsOpen, closeModal }) {
               <button
                 className="button-register"
                 type="submit"
-                onClick={handleRegister}
+                onClick={(event) => handleRegister(event)}
               >
                 Cadastrar
               </button>
-              <button className="button-cancel" onClick={closeModal}>
+              <button className="button-cancel" onClick={closeModalAlbum}>
                 Cancelar
               </button>
             </div>

@@ -1,5 +1,4 @@
 import Modal from "react-modal";
-import { useState } from "react";
 import "./style.css";
 import { FaWindowClose } from "react-icons/fa";
 import { api } from "../../services/api";
@@ -8,7 +7,6 @@ export function ModalDeleteTrack({ modalIsOpen, closeModal, trackDeleteId}) {
   function handleDelete() {
      //recebe o id da faixa e envia requisição para deletar
     api.delete(`faixa/${trackDeleteId}`);
-  
   }
 
   return (
